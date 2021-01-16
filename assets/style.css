@@ -1,0 +1,38 @@
+
+header {
+    background-color: #e45f56;
+    text-align: center;
+}
+
+.quiz-game-nav {
+    color: beige !important;
+    display: inline-block;
+}
+
+nav h1 {
+    display: inline-block;
+}
+
+.my-background {
+    background-color: #e45f56;
+}
+
+.text-color {
+    color: beige;
+}
+
+.play {
+    color: #00d000;
+}
+
+.btn-play {
+    color:beige;
+    background-color: #00d000;
+    border-color:green;
+}
+
+.btn-cancel {
+    color: beige;
+    background-color: gray;
+    border-color: darkgray;
+}
