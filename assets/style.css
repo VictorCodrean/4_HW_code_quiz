@@ -28,6 +28,11 @@ nav h1 {
     color: #00d000;
 }
 
+.answer-btn {
+    min-width: 120px;
+    max-width: 120px;
+}
+
 .btn-play {
     color:beige;
     background-color: #00d000;
