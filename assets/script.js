@@ -6,46 +6,114 @@ var hintEl = document.querySelector("#welcome-header");
 var adviceEl = document.querySelector("#question-visitor");
 var questionEl = document.querySelector("#game-instructions");
 var answerEl = document.querySelector("#button-choices");
+var timerEl = document.querySelector("#given-time")
 
 var givenTime = 60;
 var timeTicking;
+
 var definedIndex = 0;
+var userScore = 0;
 
 // Arrays of objects (questions)
 var questions = [
+    {
+        question: "JavaScript is the same as Java?",
+        choices: ["True", "False",],
+        answer: "False"
+    },
+
+    {
+        question: "How long did it take a person to develop JavaScript?",
+        choices: ["10 days", "5 weeks", "4 months", "1 year"],
+        answer: "10 days"
+    },
+
     {
         question: "Inside which HTML element do we put the JavaScript:",
         choices: ["<javascript>", "<script>", "<js>", "<style>"],
         answer: "<script>"
     },
 
+
+
+    {
+        question: "Correct syntax for referring to an external script called \"xxx.js\":",
+        choices: ["<script name=\"xxx.js\">", "<script src=\"xxx.js\">", "<script href=\"xxx.js\">"],
+        answer: "<script src=\"xxx.js\">"
+    },
+
     {
         question: "Conditional Statements for JS are:",
-        choices: [".for() {};", ".while() {};", ".if(){} else{};", "function() {};"],
-        answer: ".if(){} else{};",
+        choices: [".for() {};", ".while() {};", ".function() {};", ".if(){} else{};"],
+        answer: ".if(){} else{};"
+    },
+
+    {
+        question: "WHILE loop start:",
+        choices: ["while (i <= 10)", "while (i <= 10; i++)", "while i <= 10"],
+        answer: "while (i <= 10)"
+    },
+
+    {
+        question: "How A function in JavaScript looks like:",
+        choices: ["function {myFunction}", "function.myFunction[]", "function myFunction()"],
+        answer: "function myFunction()"
+    },
+
+    {
+        question: "function to round down a decimal number to the nearest integer ?",
+        choices: ["Math.random()", "MathInt()", "Math.Floor()", "ParseInt()"],
+        answer: "Math.Floor()"
+    },
+
+    {
+        question: "The method to sellect elements from html:",
+        choices: [".querySellector()", ".getElementById", ".getElementsByClassName", "all of them"],
+        answer: "all of them"
+    },
+
+    {
+        question: "The method to listen for a click event:",
+        choices: [".onClickEvent()", ".ifClick()", ".afterClick", ".addEventListener()"],
+        answer: ".addEventListener()"
     }
 ];
 
 //<<<<<< 1. When I click start/play game the timer should start and question prompt to be presented:
+
+
+// Time reaches 0
+function timer() {
+
+    givenTime--;
+    timerEl.textContent = givenTime;
+    if (givenTime <= 0) {
+        givenTime = 0;
+        timerEl.textContent = "Time out"
+        clearInterval(timeTicking);
+        hintEl.textContent = "Share to your friends so they can try out the Quiz! "
+        questionEl.innerHTML = "Your score is: " + userScore + " out of 100!";
+        answerEl.innerHTML = "<button class=\"btn bg-success m-3 p-2\">" + "HighScores:" + "</button>";
+    }
+}
+
+function timeOut() {
+    clearInterval(timeTicking);
+    timerEl.textContent = "That was all";
+    questionEl.textContent = userScore;
+    hintEl.textContent = "Share to your friends so they can try out the Quiz! "
+    questionEl.innerHTML = "Your score is: " + userScore + " out of 100!";
+    answerEl.innerHTML = "<button class=\"btn bg-success m-3 p-2\">" + "HighScores:" + "</h3>";
+
+
+}
+
 function startGame() {
     console.log("Game started");
-    timer();
+    timeTicking = setInterval(timer, 1000);
     nextQuestion();
 
-};
-
-// Start timer as game started 
-function timer() {
-    console.log("Timer started");
-    var timer = setInterval(function () {
-        givenTime--;
-        if (givenTime <= 0) {
-            clearInterval(timer);
-        } else {
-            timeTicking.textContent = givenTime;
-        }
-    }, 1000);
-};
+}
 
 // Dynamic website using Web API
 function nextQuestion() {
@@ -54,8 +122,6 @@ function nextQuestion() {
     questionEl.setAttribute("style", "font-size: 25px;");
     answerEl.innerHTML = "";
 
-    console.log(questionEl);
-
     for (i = 0; i < questions[definedIndex].choices.length; i++) {
 
         // First time I created a <p> element but looks like it's easier to create a <button> element 
@@ -63,8 +129,10 @@ function nextQuestion() {
         possibleAnswer.setAttribute("class", "btn answer-btn bg-warning m-3 p-2",);
         possibleAnswer.setAttribute("value", questions[definedIndex].choices[i]);
         possibleAnswer.textContent = questions[definedIndex].choices[i];
-        answerEl.appendChild(possibleAnswer);
-        possibleAnswer.onclick = checkAnswer();
+        answerEl.append(possibleAnswer);
+
+        possibleAnswer.onclick = checkAnswer;
+
 
         console.log(possibleAnswer);
     }
@@ -72,6 +140,22 @@ function nextQuestion() {
 
 // <<<<<< When I answer a question, the next one is presented
 function checkAnswer() {
+    if (this.value === questions[definedIndex].answer) {
+        userScore += 10;
+        console.log(userScore);
+
+        // Penalty for wrong answer
+    } else {
+        givenTime -= 5;
+
+    }
+    definedIndex++;
+    // If last question timOut
+    if (definedIndex === questions.length) {
+        timeOut();
+    } else {
+        nextQuestion();
+    }
 
 };
 
@@ -90,12 +174,16 @@ startButtonEl.addEventListener("click", function () {
     focusOn.textContent = "Correct answer - 10 points; Wrong answer - substract 5 sec:";
     welcomeHeaderEl.appendChild(focusOn);
 
-    var time = document.createElement("h2");
-    time.textContent = givenTime;
-    welcomeHeaderEl.insertBefore(time, welcomeHeaderEl.children[0]);
-    time.setAttribute("class", "btn bg-warning btn-lg");
-    timeTicking = time;
+    // var time = document.createElement("h2");
+    // time.textContent = givenTime;
+    // welcomeHeaderEl.insertBefore(time, welcomeHeaderEl.children[0]);
+    // time.setAttribute("class", "btn bg-warning btn-lg");
 });
+
+
+
+
+
 // <<<<<< If answer incorrect the time is substracted from the clock
 
 // <<<<<< If all question answered or the timer reaches 0 - Game is over
