@@ -1,12 +1,21 @@
 // variable querySelectors:
 var startButtonEl = document.querySelector("#playNow");
+var notYetEl = document.querySelector("#notYet");
 var mainContainerEl = document.querySelector("#main-container");
 var welcomeHeaderEl = document.querySelector("#welcome-header");
 var hintEl = document.querySelector("#welcome-header");
 var adviceEl = document.querySelector("#question-visitor");
 var questionEl = document.querySelector("#game-instructions");
 var answerEl = document.querySelector("#button-choices");
-var timerEl = document.querySelector("#given-time")
+var timerEl = document.querySelector("#given-time");
+var finalScoreEl = document.querySelector("#final-score");
+var userFormEl = document.querySelector("#user-input");
+var userInputEl = document.querySelector("#initials");
+var submitButtonEl = document.querySelector("#submit");
+var msgDivEl = document.querySelector("#msg");
+var userStoredEl = document.querySelector("#user-stored");
+var scoreStoredEl = document.querySelector("#score-stored");
+
 
 var givenTime = 60;
 var timeTicking;
@@ -14,10 +23,10 @@ var timeTicking;
 var definedIndex = 0;
 var userScore = 0;
 
-// Arrays of objects (questions)
+// Array of objects (questions)
 var questions = [
     {
-        question: "JavaScript is the same as Java?",
+        question: "JavaScript is the same as Java:",
         choices: ["True", "False",],
         answer: "False"
     },
@@ -33,8 +42,6 @@ var questions = [
         choices: ["<javascript>", "<script>", "<js>", "<style>"],
         answer: "<script>"
     },
-
-
 
     {
         question: "Correct syntax for referring to an external script called \"xxx.js\":",
@@ -78,11 +85,13 @@ var questions = [
         answer: ".addEventListener()"
     }
 ];
-
 //<<<<<< 1. When I click start/play game the timer should start and question prompt to be presented:
-
-
-// Time reaches 0
+function startGame() {
+    console.log("Game started");
+    timeTicking = setInterval(timer, 1000);
+    nextQuestion();
+}
+// <<<<<< If timer reaches 0 - Game is over
 function timer() {
 
     givenTime--;
@@ -90,31 +99,24 @@ function timer() {
     if (givenTime <= 0) {
         givenTime = 0;
         timerEl.textContent = "Time out"
-        clearInterval(timeTicking);
-        hintEl.textContent = "Share to your friends so they can try out the Quiz! "
-        questionEl.innerHTML = "Your score is: " + userScore + " out of 100!";
-        answerEl.innerHTML = "<button class=\"btn bg-success m-3 p-2\">" + "HighScores:" + "</button>";
+        changeDom();
     }
 }
 
 function timeOut() {
-    clearInterval(timeTicking);
     timerEl.textContent = "That was all";
-    questionEl.textContent = userScore;
+    changeDom();
+}
+
+function changeDom() {
+    clearInterval(timeTicking);
     hintEl.textContent = "Share to your friends so they can try out the Quiz! "
     questionEl.innerHTML = "Your score is: " + userScore + " out of 100!";
-    answerEl.innerHTML = "<button class=\"btn bg-success m-3 p-2\">" + "HighScores:" + "</h3>";
-
-
-}
-
-function startGame() {
-    console.log("Game started");
-    timeTicking = setInterval(timer, 1000);
-    nextQuestion();
-
-}
-
+    answerEl.innerHTML = "<button onClick=\"window.location.reload();\" id=\"start-again\" class=\"btn bg-success m-3 p-2\">" + "Start again" + "</h3>";
+    userFormEl.setAttribute("style", "block");
+    finalScoreEl.textContent = userScore + " ";
+    userFormEl.setAttribute("style", "block");
+};
 // Dynamic website using Web API
 function nextQuestion() {
     var availableQuestion = questions[definedIndex].question;
@@ -124,40 +126,67 @@ function nextQuestion() {
 
     for (i = 0; i < questions[definedIndex].choices.length; i++) {
 
-        // First time I created a <p> element but looks like it's easier to create a <button> element 
         var possibleAnswer = document.createElement("button");
         possibleAnswer.setAttribute("class", "btn answer-btn bg-warning m-3 p-2",);
         possibleAnswer.setAttribute("value", questions[definedIndex].choices[i]);
         possibleAnswer.textContent = questions[definedIndex].choices[i];
         answerEl.append(possibleAnswer);
-
         possibleAnswer.onclick = checkAnswer;
-
-
-        console.log(possibleAnswer);
     }
 };
-
-// <<<<<< When I answer a question, the next one is presented
+// <<<<<< 2. When I answer a question, the next one is presented
 function checkAnswer() {
     if (this.value === questions[definedIndex].answer) {
+
         userScore += 10;
         console.log(userScore);
 
-        // Penalty for wrong answer
+        // <<<<<< If answer incorrect the time is substracted from the clock
     } else {
-        givenTime -= 5;
-
+        givenTime -= 10;
     }
     definedIndex++;
-    // If last question timOut
+    // <<<<<< If all question answered - Game is over
     if (definedIndex === questions.length) {
         timeOut();
     } else {
         nextQuestion();
     }
-
 };
+
+//<<<<<<< I can save my initials and my score
+function form() {
+    var finalScore = localStorage.getItem("finalScore");
+    var userInput = localStorage.getItem("userInput");
+
+    if (!finalScore || !userInput) {
+        return;
+    }
+
+    userStoredEl.textContent = userInput;
+    scoreStoredEl.textContent = finalScore;
+    console.log(userStoredEl);
+    console.log(scoreStoredEl);
+};
+
+submitButtonEl.addEventListener("click", function (event) {
+    event.preventDefault();
+
+    var userInput = document.querySelector("#initials").value;
+    var finalScore = userScore;
+
+    if (userInput === "") {
+        alert("Input area cannot be blank");
+    } else {
+        // alert("Your score registered successfully");
+
+        localStorage.setItem("finalScore", userScore);
+        localStorage.setItem("userInput", userInput);
+        console.log(userInput);
+        console.log(finalScore);
+        form();
+    }
+});
 
 //_____Event Listeners_____
 startButtonEl.addEventListener("click", function () {
@@ -167,48 +196,63 @@ startButtonEl.addEventListener("click", function () {
     adviceEl.innerHTML = "";
 
     var hint = document.createElement("h5");
-    hint.textContent = "HINT: Carefully read and answer the following questions.";
+    hint.textContent = "HINT: Read Carefully since there are penalties";
     welcomeHeaderEl.appendChild(hint);
 
     var focusOn = document.createElement("h6");
-    focusOn.textContent = "Correct answer - 10 points; Wrong answer - substract 5 sec:";
+    focusOn.textContent = "Correct answer: 10 points; Wrong answer - substract 10 sec:";
     welcomeHeaderEl.appendChild(focusOn);
+});
 
-    // var time = document.createElement("h2");
-    // time.textContent = givenTime;
-    // welcomeHeaderEl.insertBefore(time, welcomeHeaderEl.children[0]);
-    // time.setAttribute("class", "btn bg-warning btn-lg");
+notYetEl.addEventListener("click", function () {
+    alert("Ok, whenever you feel ready come back and press Play Now.");
 });
 
 
+// var startAgainEl = document.getElementById("start-again");
+// startAgainEl.addEventListener("click", function () {
+//     startGame();
 
+//     hintEl.innerHTML = "";
+//     adviceEl.innerHTML = "";
 
+//     var hint = document.createElement("h5");
+//     hint.textContent = "HINT: Carefully read and answer the following questions.";
+//     welcomeHeaderEl.appendChild(hint);
 
-// <<<<<< If answer incorrect the time is substracted from the clock
+//     var focusOn = document.createElement("h6");
+//     focusOn.textContent = "Correct answer - 10 points; Wrong answer - substract 5 sec:";
+//     welcomeHeaderEl.appendChild(focusOn);
+// })
 
-// <<<<<< If all question answered or the timer reaches 0 - Game is over
+// function form() {
+//     var mainEl = document.querySelector("#main-content");
+//     var userForm = document.createElement("div");
+//     userForm.innerHTML = "<h4>Enter your initials to save your score:</h4>"
+//     mainEl.appendChild(userForm);
+//     userForm.setAttribute("class", "row rounded-lg  my-3 p-5 text-center my-background text-color");
 
-// <<<<<< If game is over prompt a form to save initials and score
+//     userForm.setAttribute("id", "user-form");
+//     var userFormEl = document.querySelector("#user-form");
+//     var userInput = document.createElement("div");
+//     userInput.innerHTML = "<input type=\"text\" id=\"initials\" placeholder=\"ex: Dwayne Johnson\">";
+//     userInput.setAttribute("class", "px-4");
+//     userFormEl.appendChild(userInput);
 
-
-
-
-// Hide and Show elements functions
-
-// function hideElement(elementToHide) {
-//     if (elementToHide !== undefined) {
-//         elementToHide.style.display = "none"
-//     }
+//     var userSubmit = document.createElement("button");
+//     userSubmit.setAttribute("class", "text-warning btn bg-dark px-4")
+//     userSubmit.textContent = "Submit";
+//     userFormEl.appendChild(userSubmit);
+//     userSubmit.onclick = addUserScore();
+//     var userInitialsEl = document.querySelector("#initials");
 // };
+// var userInitialsEl = document.querySelector("#initials");
+// function addUserScore() {
+//     console.log("raa");
 
-// function showElement(elementToShow, displayStyle) {
+//     if (userInitialsEL === "") {
+//         alert("Enter your name or initials:")
+//     } else {
 
-//     console.log(elementToShow);
-//     console.log(displayStyle);
-//     if (elementToShow !== undefined & displayStyle === undefined) {
-//         elementToShow.style.display = displayStyle;
-//     };
-//     if (displayStyle !== undefined) {
-//         elementToShow.style.display = displayStyle;
-//     };
+//     }
 // };

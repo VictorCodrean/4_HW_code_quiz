@@ -21,8 +21,8 @@
             <h1><a href="index.html" class="quiz-game-nav">Quiz Game</a></h1>
         </nav>
     </header>
-    <main class="container">
-        <div class="rounded-lg row my-5 p-4 text-center my-background">
+    <main id="main-content" class="container">
+        <div class="rounded-lg row my-5 p-3 text-center my-background">
             <div id="main-container" class="col-lg-8 mx-auto text-color">
                 <span id="given-time" class="btn bg-warning btn-lg hidden">Just 60 seconds!</span>
                 <div id="welcome-container">
@@ -40,10 +40,25 @@
                 <hr class="mb-5">
                 <div id="button-choices">
                     <button id="playNow" type="button" class="btn btn-play btn-lg ">Play Now!</button>
-                    <button type="button" class="btn btn-cancel btn-lg">Not ready, yet</button>
+                    <button id="notYet" type="button" class="btn btn-cancel btn-lg">Not ready, yet</button>
                 </div>
             </div>
         </div>
+        <div id="user-input" class="container text-color rounded-lg my-2 p-2 text-center my-background"
+            style="display: none">
+            <section>
+                <h4 id="final-results">Gained : <span id="final-score"></span>points</h4>
+                <label for="initials" class="lead">Enter your Initials:</label>
+                <input id="initials" type="text" name="initials">
+                <button id="submit" class="btn text-warning bg-dark inline-block my-2">Add Score</button>
+            </section>
+            <section>
+                <h4>Registered User:</h4>
+                <p><strong>User:</strong> <span id="user-stored"></span></p>
+                <p><strong>Score:</strong> <span id="score-stored"></span></p>
+            </section>
+        </div>
+        <div></div>
     </main>
     <script src="assets/script.js"></script>
 </body>
