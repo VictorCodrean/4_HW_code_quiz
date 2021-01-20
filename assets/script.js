@@ -139,6 +139,7 @@ function checkAnswer() {
         checkAnswerEl.textContent = "Correct";
         checkAnswerEl.setAttribute("class", "bg-green quiz-game-nav")
         setTimeout(function () {
+            checkAnswerEl.textContent = "Quiz Game";
             checkAnswerEl.classList.remove("bg-green")
         }, 1000);
 
@@ -149,6 +150,7 @@ function checkAnswer() {
         checkAnswerEl.textContent = "Wrong";
         checkAnswerEl.setAttribute("class", "bg-red quiz-game-nav")
         setTimeout(function () {
+            checkAnswerEl.textContent = "Quiz Game";
             checkAnswerEl.classList.remove("bg-red")
         }, 1000);
     }

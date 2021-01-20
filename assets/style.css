@@ -46,9 +46,9 @@ nav h1 {
 }
 
 .bg-green {
-    background-color: #00d000;
+    color: #00d000 !important;
 }
 
 .bg-red {
-    background-color: red;
+    color:black !important;
 }
