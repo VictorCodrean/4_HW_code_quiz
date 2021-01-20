@@ -1,7 +1,7 @@
 // variable querySelectors:
 var startButtonEl = document.querySelector("#playNow");
 var notYetEl = document.querySelector("#notYet");
-var mainContainerEl = document.querySelector("#main-container");
+// var mainContainerEl = document.querySelector("#main-container");
 var welcomeHeaderEl = document.querySelector("#welcome-header");
 var hintEl = document.querySelector("#welcome-header");
 var adviceEl = document.querySelector("#question-visitor");
@@ -10,12 +10,12 @@ var answerEl = document.querySelector("#button-choices");
 var timerEl = document.querySelector("#given-time");
 var finalScoreEl = document.querySelector("#final-score");
 var userFormEl = document.querySelector("#user-input");
-var userInputEl = document.querySelector("#initials");
+// var userInputEl = document.querySelector("#initials");
 var submitButtonEl = document.querySelector("#submit");
-var msgDivEl = document.querySelector("#msg");
+// var msgDivEl = document.querySelector("#msg");
 var userStoredEl = document.querySelector("#user-stored");
 var scoreStoredEl = document.querySelector("#score-stored");
-
+var checkAnswerEl = document.querySelector("#title-check");
 
 var givenTime = 60;
 var timeTicking;
@@ -69,7 +69,7 @@ var questions = [
 
     {
         question: "function to round down a decimal number to the nearest integer ?",
-        choices: ["Math.random()", "MathInt()", "Math.Floor()", "ParseInt()"],
+        choices: ["Math.random()", "MathInt()", "Math.Floor()", "Math.round()"],
         answer: "Math.Floor()"
     },
 
@@ -90,10 +90,9 @@ function startGame() {
     console.log("Game started");
     timeTicking = setInterval(timer, 1000);
     nextQuestion();
-}
+};
 // <<<<<< If timer reaches 0 - Game is over
 function timer() {
-
     givenTime--;
     timerEl.textContent = givenTime;
     if (givenTime <= 0) {
@@ -101,12 +100,7 @@ function timer() {
         timerEl.textContent = "Time out"
         changeDom();
     }
-}
-
-function timeOut() {
-    timerEl.textContent = "That was all";
-    changeDom();
-}
+};
 
 function changeDom() {
     clearInterval(timeTicking);
@@ -136,19 +130,33 @@ function nextQuestion() {
 };
 // <<<<<< 2. When I answer a question, the next one is presented
 function checkAnswer() {
+
     if (this.value === questions[definedIndex].answer) {
 
         userScore += 10;
         console.log(userScore);
+        // .setAttribute("style", "background-color: green");
+        checkAnswerEl.textContent = "Correct";
+        checkAnswerEl.setAttribute("class", "bg-green quiz-game-nav")
+        setTimeout(function () {
+            checkAnswerEl.classList.remove("bg-green")
+        }, 1000);
 
         // <<<<<< If answer incorrect the time is substracted from the clock
     } else {
         givenTime -= 10;
+        // this.setAttribute("style", "background-color: red");
+        checkAnswerEl.textContent = "Wrong";
+        checkAnswerEl.setAttribute("class", "bg-red quiz-game-nav")
+        setTimeout(function () {
+            checkAnswerEl.classList.remove("bg-red")
+        }, 1000);
     }
     definedIndex++;
     // <<<<<< If all question answered - Game is over
     if (definedIndex === questions.length) {
-        timeOut();
+        timerEl.textContent = "That was all";
+        changeDom();
     } else {
         nextQuestion();
     }

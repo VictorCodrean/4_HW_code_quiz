@@ -44,3 +44,11 @@ nav h1 {
     background-color: gray;
     border-color: darkgray;
 }
+
+.bg-green {
+    background-color: #00d000;
+}
+
+.bg-red {
+    background-color: red;
+}
