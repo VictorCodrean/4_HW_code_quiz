@@ -1,7 +1,6 @@
 // variable querySelectors:
 var startButtonEl = document.querySelector("#playNow");
 var notYetEl = document.querySelector("#notYet");
-// var mainContainerEl = document.querySelector("#main-container");
 var welcomeHeaderEl = document.querySelector("#welcome-header");
 var hintEl = document.querySelector("#welcome-header");
 var adviceEl = document.querySelector("#question-visitor");
@@ -10,18 +9,26 @@ var answerEl = document.querySelector("#button-choices");
 var timerEl = document.querySelector("#given-time");
 var finalScoreEl = document.querySelector("#final-score");
 var userFormEl = document.querySelector("#user-input");
-// var userInputEl = document.querySelector("#initials");
 var submitButtonEl = document.querySelector("#submit");
-// var msgDivEl = document.querySelector("#msg");
 var userStoredEl = document.querySelector("#user-stored");
 var scoreStoredEl = document.querySelector("#score-stored");
 var checkAnswerEl = document.querySelector("#title-check");
+var highScoreEl = document.querySelector("#high-score");
+var scoreListEl = document.querySelector("#highscore-list");
+var appendLiEl = document.querySelector("#append-li");
+var hideHighscoreEl = document.querySelector("#hide-highscores");
 
 var givenTime = 60;
 var timeTicking;
 
 var definedIndex = 0;
 var userScore = 0;
+
+var scoreList = [];
+var localHighscores = localStorage.getItem("scoreList")
+if (localHighscores !== null) {
+    scoreList = JSON.parse(localHighscores);
+};
 
 // Array of objects (questions)
 var questions = [
@@ -175,10 +182,11 @@ function form() {
 
     userStoredEl.textContent = userInput;
     scoreStoredEl.textContent = finalScore;
-    console.log(userStoredEl);
-    console.log(scoreStoredEl);
 };
 
+//_____Event Listeners_____
+
+//  registered user
 submitButtonEl.addEventListener("click", function (event) {
     event.preventDefault();
 
@@ -188,17 +196,32 @@ submitButtonEl.addEventListener("click", function (event) {
     if (userInput === "") {
         alert("Input area cannot be blank");
     } else {
-        // alert("Your score registered successfully");
-
         localStorage.setItem("finalScore", userScore);
         localStorage.setItem("userInput", userInput);
-        console.log(userInput);
-        console.log(finalScore);
+
+        scoreList.push([userInput, finalScore]);
+        localStorage.setItem("scoreList", JSON.stringify(scoreList));
         form();
     }
 });
 
-//_____Event Listeners_____
+// append li of stored users
+highScoreEl.addEventListener("click", function () {
+    appendLiEl.innerHTML = "";
+    for (var i = 0; i < scoreList.length; i++) {
+        var user = document.createElement("li");
+        user.textContent = scoreList[i][0] + ": " + scoreList[i][1] + " points";
+        appendLiEl.appendChild(user);
+    }
+    scoreListEl.setAttribute("style", "block");
+});
+
+// clear scoreList
+hideHighscoreEl.addEventListener("click", function () {
+    appendLiEl.innerHTML = "";
+});
+
+// start button
 startButtonEl.addEventListener("click", function () {
     startGame();
 
@@ -214,6 +237,7 @@ startButtonEl.addEventListener("click", function () {
     welcomeHeaderEl.appendChild(focusOn);
 });
 
+// not ready yet
 notYetEl.addEventListener("click", function () {
     alert("Ok, whenever you feel ready come back and press Play Now.");
 });

@@ -51,6 +51,7 @@
                 <label for="initials" class="lead">Enter your Initials:</label>
                 <input id="initials" type="text" name="initials">
                 <button id="submit" class="btn text-warning bg-dark inline-block my-2">Add Score</button>
+                <button id="high-score" class="btn text-warning bg-dark inline-block my-2">HighScore List:</button>
             </section>
             <section>
                 <h4>Registered User:</h4>
@@ -58,7 +59,17 @@
                 <p><strong>Score:</strong> <span id="score-stored"></span></p>
             </section>
         </div>
-        <div></div>
+        <div style="display: none" id="highscore-list" class="card rounded-lg my-5 p-3 my-background text-color">
+            <div class="card-body" id="scoreboard">
+                <h5>Highscores!</h5>
+                <div class="card rounded-lg my-1 p-1 my-background">
+                    <ul id="append-li" class="">
+
+                    </ul>
+                </div>
+                <button id="hide-highscores" class="btn answer-btn bg-warning m-3 p-2">Hide highscores</button>
+            </div>
+        </div>
     </main>
     <script src="assets/script.js"></script>
 </body>
